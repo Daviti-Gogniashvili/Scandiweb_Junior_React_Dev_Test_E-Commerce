@@ -1,0 +1,155 @@
+a {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dropdown-currency > p {
+    text-align: center;
+    z-index: 1;
+    margin: 0;
+    line-height: 30px;
+    position: absolute;
+    font-size: 1.95em;
+    font-weight: 600;
+    width: 25px;
+  }
+  
+  .nav-bar-container {
+    background-color: white;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    width: 100%;
+    height: 80px;
+  
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 5px 10px;
+    top: 0;
+    position: fixed;
+  }
+  
+  .category-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 80px;
+    margin-left: 101px;
+  }
+  
+  .category-item {
+    padding: 0 16px 0 16px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 1.6em;
+    font-weight: 400;
+    color: #1d1f22;
+    text-decoration: none;
+  }
+  
+  .logo-container {
+    margin-right: 10%;
+  }
+  
+  .active {
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.6em;
+    padding: 0 16px 0 16px;
+    height: 80px;
+    line-height: 80px;
+    border-bottom: solid;
+    border-width: 1px;
+    color: #5ece7b;
+    border-color: #5ece7b;
+  }
+  
+  .actions-container {
+    position: relative;
+    width: 204px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 101px;
+  }
+  
+  .dropdown-currency {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+  }
+  
+  .dropdown-content {
+    top: 40px;
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 114px;
+    min-height: auto;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+  
+  .dropdown-item {
+    font-size: 1.8em;
+    font-family: "Raleway";
+    font-weight: 700;
+    color: black;
+    display: block;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    padding: 21px 40px 21px 22px;
+    background: #fff;
+    border: none;
+  }
+  
+  .show-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .actions-item {
+    z-index: 2;
+    margin: 0;
+    padding: 13px 0px 13px 0;
+    background: transparent;
+    border: none;
+  }
+  
+  .dropdown-currency > .actions-item {
+    padding-left: 30px;
+    margin-right: 20px;
+  }
+  
+  .cart-display-container {
+    position: relative;
+    height: auto;
+    width: auto;
+  }
+  
+  .cart-item-count {
+    line-height: 17px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    width: 17px;
+    height: 17px;
+    border-radius: 10px;
+    top: 7px;
+    right: -7px;
+    position: absolute;
+    margin: 0;
+  }
+  

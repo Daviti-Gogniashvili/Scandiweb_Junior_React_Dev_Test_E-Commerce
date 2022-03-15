@@ -1,0 +1,32 @@
+h2 {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .product-body-container {
+    margin: 160px 101px 0 101px;
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .category-name-container {
+    margin-bottom: 103px;
+    font-size: 4.2em;
+    font-weight: 400;
+  }
+  
+  .category-name {
+    text-transform: uppercase;
+    font-family: "Raleway";
+  }
+  
+  .product-container {
+    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    padding: 10px;
+  }
+  
