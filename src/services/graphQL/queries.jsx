@@ -56,4 +56,21 @@ const getByIdQuery = gql`
     }
 `
 
-export {getAllQuery,getByIdQuery}
+const getCategories = gql`
+    query getCategory {
+        categories {
+            name
+        }
+    }
+`
+
+const getCurrencies = gql`
+    query getCurrency {
+        currencies {
+            label
+            symbol
+        }
+    }
+`
+
+export { getAllQuery, getByIdQuery, getCategories,getCurrencies }

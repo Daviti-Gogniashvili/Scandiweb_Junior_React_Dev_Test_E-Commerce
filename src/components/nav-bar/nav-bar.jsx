@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { fetchCategories, fetchCurrencies } from '../../services/dataFetching/fetchDataFromEndpoint';
+
 import BrandIcon from '../../assets/nav-bar-assets/BrandIcon.svg';
 import CurrencyControl from '../../assets/nav-bar-assets/Vector.png';
 import EmptyCart from '../../assets/nav-bar-assets/EmptyCart.svg';
@@ -21,7 +23,9 @@ class NavBar extends Component {
             currencyLabel: "$",
             currencyIndex: 0,
             minicartState: false,
-            badgeAmount: 0
+            badgeAmount: 0,
+            categories: [],
+            currencies: []
         }
     }
 
@@ -44,14 +48,15 @@ class NavBar extends Component {
     }
 
     currency = (e) => {
+        let symbol = this.state.currencies[e.target.id].symbol;
         store.dispatch({
             type: "currency",
             payload: {
                 curIndex: e.target.id,
-                symbol: e.target.value
+                symbol: symbol
             }
         });
-        this.setState({ currencyIndex: e.target.id, currencyLabel: e.target.value });
+        this.setState({ currencyIndex: e.target.id, currencyLabel: symbol });
 
     }
 
@@ -66,8 +71,22 @@ class NavBar extends Component {
         this.mounted && this.setState({ minicartState: data })
     }
 
+    getCategories() {
+        fetchCategories().then((res) => {
+            this.mounted && this.setState({ categories: res.data.categories });
+        });
+    }
+
+    getCurrencies() {
+        fetchCurrencies().then((res) => {
+            this.mounted && this.setState({ currencies: res.data.currencies });
+        });
+    }
+
     componentDidMount() {
         this.mounted = true;
+        this.getCategories();
+        this.getCurrencies();
         this.getBadgeAmount();
         this.outOfDropdownCurrency();
         store.dispatch({
@@ -89,9 +108,9 @@ class NavBar extends Component {
                 {this.mounted &&
                     <>
                         <div className="category-container">
-                            <NavLink to="/all" id="show" className="category-item">ALL</NavLink>
-                            <NavLink to="/clothes" id="show" className="category-item">CLOTHES</NavLink>
-                            <NavLink to="/tech" id="show" className="category-item">TECH</NavLink>
+                            {this.state.categories.map((item,index) => (
+                                <NavLink key={index} to={"/" + item.name} id="show" className="category-item">{item.name.toUpperCase()}</NavLink>
+                            ))}
                             <NavLink to="/out-of-stock" id="show" className="category-item">OUT OF STOCK</NavLink>
                         </div>
                         <div className="logo-container">
@@ -108,11 +127,16 @@ class NavBar extends Component {
                                     alt="currency controler"
                                 />
                                 <div id="myDropdown" className={"dropdown-content " + this.state.dropdownCurrency}>
-                                    <button onClick={this.currency} id="0" className="dropdown-item" value="$">$ USD</button>
-                                    <button onClick={this.currency} id="1" className="dropdown-item" value="£">£ GBP</button>
-                                    <button onClick={this.currency} id="2" className="dropdown-item" value="A$">A$ AUD</button>
-                                    <button onClick={this.currency} id="3" className="dropdown-item" value="¥">¥ JPY</button>
-                                    <button onClick={this.currency} id="4" className="dropdown-item" value="₽">₽ RUB</button>
+                                    {this.state.currencies.map((item, index) => (
+                                        <button 
+                                            key={index}
+                                            onClick={this.currency}
+                                            id={index}
+                                            className="dropdown-item"
+                                            name={item.value}>
+                                            {item.symbol} {item.label}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                             <div onClick={this.setMinicartState} className="cart-display-container">

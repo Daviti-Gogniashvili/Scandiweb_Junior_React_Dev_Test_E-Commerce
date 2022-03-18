@@ -1,5 +1,4 @@
-import { getAllQuery } from "../graphQL/queries";
-import { getByIdQuery } from "../graphQL/queries";
+import { getAllQuery, getByIdQuery, getCategories, getCurrencies } from "../graphQL/queries";
 import { client } from '../graphQL/client';
 
 const fetchAllData = async (category) => {
@@ -20,4 +19,18 @@ const fetchByIdData = async (id) => {
     return res;
 }
 
-export { fetchAllData, fetchByIdData }
+const fetchCategories = async () => {
+    let res = await client.query({
+        query: getCategories
+    });
+    return res;
+}
+
+const fetchCurrencies = async () => {
+    let res = await client.query({
+        query: getCurrencies
+    });
+    return res;
+}
+
+export { fetchAllData, fetchByIdData, fetchCategories, fetchCurrencies }

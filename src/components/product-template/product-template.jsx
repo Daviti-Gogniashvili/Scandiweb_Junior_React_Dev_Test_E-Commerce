@@ -14,7 +14,7 @@ let extension = new ProductExtention();
 
 class ProductTemplate extends Component {
 
-    fetched = false;
+    mounted = false;
     constructor() {
         super();
         this.state = {
@@ -75,28 +75,38 @@ class ProductTemplate extends Component {
     componentDidMount() {
         this.setState({
             data: this.props.item
-        })
+        });
+        this.mounted = true
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     render() {
         return (
-            <div className="template">
-                <Link to={"/" + this.props.id} onClick={this.sendData} className="product-template-container">
-                    <div className="product-image-container">
-                        <img src={this.props.item.gallery[0]} alt="Selling Product" className="product-image" />
-                    </div>
-                    <div className="product-data-container">
-                        <h4 className="product-data-brand">{this.props.item.brand}</h4>
-                        <h4 className="product-data-name">{this.props.item.name}</h4>
-                        <p className="product-data-tag">
-                            {this.props.item.prices[this.props.currencyIndex].currency.symbol +
-                                this.props.item.prices[this.props.currencyIndex].amount}
-                        </p>
-                    </div>
-                </Link>
-                {this.props.item.inStock && <this.LetButton />}
-                {!this.props.item.inStock && <this.LetCover />}
-            </div>
+            <>
+                {this.mounted ?
+                    <div className="template">
+                        <Link to={"/" + this.props.id} onClick={this.sendData} className="product-template-container">
+                            <div className="product-image-container">
+                                <img src={this.props.item.gallery[0]} alt="Selling Product" className="product-image" />
+                            </div>
+                            <div className="product-data-container">
+                                <h4 className="product-data-brand">{this.props.item.brand}</h4>
+                                <h4 className="product-data-name">{this.props.item.name}</h4>
+                                <p className="product-data-tag">
+                                    {this.props.item.prices[this.props.currencyIndex].currency.symbol +
+                                        this.props.item.prices[this.props.currencyIndex].amount}
+                                </p>
+                            </div>
+                        </Link>
+                        {this.props.item.inStock && <this.LetButton />}
+                        {!this.props.item.inStock && <this.LetCover />}
+                    </div> :
+                    <h1>...Loading</h1>
+                }
+            </>
         );
     }
 }

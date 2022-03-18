@@ -3,23 +3,20 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AllItemsComponent from "./components/all-items-component/all-items-component";
-import ClothesItemComponent from "./components/clothes-item-component/clothes-item-component";
-import TechItemComponent from "./components/tech-item-component/tech-item-component";
-import OutOfStockItemComponent from "./components/out-of-stock-item-component/out-of-stock-item-component";
+import AllItemsComponent from "./components/main-component/main-component";
 import ProductBody from "./components/product-body/product-body";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-      <Route path="cart" element={<ProductBody />}/>
-        <Route path="all" element={<AllItemsComponent />}/>
-        <Route path="clothes" element={<ClothesItemComponent />}/>
-        <Route path="tech" element={<TechItemComponent />}/>
-        <Route path="out-of-stock" element={<OutOfStockItemComponent />}/>
-        <Route path=":id" element={<ProductBody />}/>
-        <Route path="/" element={<Navigate replace to="/all"/>}/>
+        <Route path="cart" element={<ProductBody />} />
+        <Route path="all" element={<AllItemsComponent key={Date.now() + "all"}/>} />
+        <Route path="clothes" element={<AllItemsComponent key={Date.now() + "clothes"}/>} />
+        <Route path="tech" element={<AllItemsComponent key={Date.now() + "tech"}/>} />
+        <Route path="out-of-stock" element={<AllItemsComponent key={Date.now() + "outStock"}/>} />
+        <Route path=":id" element={<ProductBody />} />
+        <Route path="/" element={<Navigate replace to="/all" />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
