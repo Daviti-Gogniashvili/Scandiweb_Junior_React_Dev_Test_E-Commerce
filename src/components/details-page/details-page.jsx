@@ -22,10 +22,9 @@ class DetailsPage extends Component {
         this.state = {
             subscribed: true,
             data: [],
-            sizeButtonValue: "NO SIZE",
             html: "",
             gallerySrc: "",
-            curIndex: 0
+            curIndex: 0,
         }
     }
 
@@ -36,14 +35,27 @@ class DetailsPage extends Component {
     }
 
     sendDataToCart = () => {
+        let list = [];
+        let attr = this.state.data.attributes;
         if (this.state.data.inStock === false) alert("Out Of Stock");
         else {
-            let id = this.state.data.id + "_Cart_" + this.state.sizeButtonValue;
+            let id = this.state.data.id + "_Cart_";
+            if (attr.length === 0)
+                id += "NO ATTRIBUTE";
+
+            else
+                attr.map((item) => (
+                    id += this.state[item.name]
+                ));
+
             if (sessionStorage.getItem(id) === null) listData = [0];
-            if (this.state.sizeButtonValue === "NO SIZE" && this.state.data.attributes.length !== 0) {
-                alert("Please Select Size or Color");
-            } else {
-                extension.cartDataCreator(id, listData, this, this.state.sizeButtonValue);
+            attr.length !== 0 ?
+                attr.map((item) => (
+                    list.push(this.state[item.name])
+                )) : list = ["NO ATTRIBUTE"];
+            if (list.find((e) => e === "NO VALUE")) alert("Please Select Attribute/s");
+            else {
+                extension.cartDataCreator(id, listData, this, list);
                 this.changeBadgeState("plus");
             }
         }
@@ -51,8 +63,8 @@ class DetailsPage extends Component {
 
     setStatus_attributes() {
         if (this.fetched) {
-            if (this.state.data.attributes.length) {
-                this.attributes = this.state.data.attributes[0].items;
+            if (this.state.data.attributes.length !== 0) {
+                this.attributes = this.state.data.attributes;
                 this.status = true;
             }
         }
@@ -72,14 +84,14 @@ class DetailsPage extends Component {
         e.classList.toggle("show");
     }
 
-    setSizeButtonValue(e) {
-        this.setState({ sizeButtonValue: e.value });
-        if (this.state.sizeButtonValue === e.value) this.setState({ sizeButtonValue: "NO SIZE" })
+    setAttributeValue(e) {
+        this.setState({ [e.id]: e.value });
+        if (this.state[e.id] === e.value) this.setState({ [e.id]: "NO VALUE" })
     }
 
-    sizeButtonsAction = (e) => {
+    attributeAction = (e) => {
         this.toggleShowClass(e.target);
-        this.setSizeButtonValue(e.target);
+        this.setAttributeValue(e.target);
     }
 
     inputRefs = [];
@@ -87,6 +99,15 @@ class DetailsPage extends Component {
     setRef = (ref) => {
         this.inputRefs.push(ref);
     };
+
+    getAttributes(item) {
+        this.fetched && 
+            item.map((r) => (
+                this.setState({
+                    [r.name]: "NO VALUE"
+                })
+            ))
+    }
 
 
     async componentDidMount() {
@@ -100,12 +121,13 @@ class DetailsPage extends Component {
                 gallerySrc: res.data.product.gallery[0]
             });
         });
+        this.getAttributes(this.state.data.attributes);
     }
 
     removeShowFromUnsetSizeButton() {
         for (let i = 0; i < this.inputRefs.length; i++) {
             if (this.inputRefs[i] !== undefined) {
-                if (this.inputRefs[i].value !== this.state.sizeButtonValue) {
+                if (this.inputRefs[i].value !== this.state[this.inputRefs[i].id]) {
                     this.inputRefs[i].classList.remove("show");
 
                 }
@@ -166,35 +188,47 @@ class DetailsPage extends Component {
                                 <h2 className="name">{this.state.data.name}</h2>
                             </div>
                             <div className="item-size-container">
-                                <label htmlFor="size-form" className="size-label">SIZE:</label>
-                                <div className="sizes">
-                                    {
-                                        this.status ?
-                                            this.attributes.map((item) => (
-                                                this.state.data.attributes[0].type === "text" ?
-                                                    <button
-                                                        ref={this.setRef}
-                                                        key={item.id}
-                                                        onClick={this.sizeButtonsAction}
-                                                        className="size-input"
-                                                        value={item.value}>
-                                                        {item.value}
-                                                    </button> :
-                                                    <button
-                                                        ref={this.setRef}
-                                                        onClick={this.sizeButtonsAction}
-                                                        key={item.id}
-                                                        style={{
-                                                            backgroundColor: item.value,
-                                                            color: item.value
-                                                        }}
-                                                        className="size-input-swatch"
-                                                        value={item.value}
-                                                    />
-                                            )) :
-                                            <div className="no-size">No Sizes</div>
-                                    }
-                                </div>
+                                {
+                                    this.status ?
+                                        this.attributes.map((item, index) => (
+                                            <div key={index}>
+                                                <label htmlFor="size-form" className="size-label">{item.name.toUpperCase() + ":"}</label>
+                                                <div className="sizes">
+                                                    {item.type === "text" ?
+                                                        <>
+                                                            {item.items.map((r) => (
+                                                                <button
+                                                                    ref={this.setRef}
+                                                                    id={item.name}
+                                                                    key={r.id}
+                                                                    onClick={this.attributeAction}
+                                                                    className="size-input"
+                                                                    value={r.value}>
+                                                                    {r.value}
+                                                                </button>
+                                                            ))}
+                                                        </> :
+                                                        <>
+                                                            {item.items.map((r) => (
+                                                                <button
+                                                                    ref={this.setRef}
+                                                                    id={item.name}
+                                                                    onClick={this.attributeAction}
+                                                                    key={r.id}
+                                                                    style={{
+                                                                        backgroundColor: r.value,
+                                                                        color: r.value
+                                                                    }}
+                                                                    className="size-input-swatch"
+                                                                    value={r.value}
+                                                                />
+                                                            ))}
+                                                        </>}
+                                                </div>
+                                            </div>
+                                        )) :
+                                        <div className="no-size">No Attributes</div>
+                                }
                             </div>
                             <div className="item-price-container">
                                 <p>PRICE:</p>

@@ -39,20 +39,26 @@ class ProductTemplate extends Component {
 
     sendDataToCart = () => {
         this.changeBadgeState("plus");
-        let id;
-        if (this.props.item.attributes.length === 0)
-            id = this.props.id + "_Cart_NO SIZE";
+        let list = []
+        let id = this.props.id + "_Cart_";
+        let attr = this.props.item.attributes;
+        if (attr.length === 0) {
+            id += "NO ATTRIBUTE";
+            list = ["NO ATTRIBUTE"];
+        }
         else {
-            id = this.props.id + "_Cart_" +
-                this.props.item.attributes[0].items[0].value
+            attr.map((item) => (
+                list.push(item.items[0].value)
+            ));
+            id += list.join('');
+
         }
         if (sessionStorage.getItem(id) === null) listData = [0];
         extension.cartDataCreator(
             id,
             listData,
             this,
-            this.props.item.attributes.length === 0 ?
-                "NO SIZE" : this.props.item.attributes[0].items[0].value
+            list
         );
     }
 

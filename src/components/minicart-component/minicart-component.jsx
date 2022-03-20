@@ -21,16 +21,7 @@ class MinicartComponent extends Component {
         }
     }
 
-    checkForSwatch() {
-        if (!/^[\w]+$/.test(this.refs.sizeRef === undefined ? "A" : this.refs.sizeRef.value)) {
-            this.refs.sizeRef.style.backgroundColor = this.refs.sizeRef.value;
-            this.refs.sizeRef.style.color = this.refs.sizeRef.value;
-            this.refs.sizeRef.innerHTML = "A";
-        }
-    }
-
     componentDidMount() {
-        this.checkForSwatch();
         this.computeTotal();
         this.outOfMinicart();
         this.mounted = true;
@@ -116,35 +107,61 @@ class MinicartComponent extends Component {
                                         {value[1].item.attributes.length === 0 ?
                                             <p
                                                 id="size"
-                                                ref="sizeRef"
                                                 className="size">
                                                 {value[1].size}
                                             </p> :
-                                            value[1].item.attributes[0].items.map((item) => (
-                                                item.value !== value[1].size ?
-                                                    <p
-                                                        id="size"
-                                                        ref="sizeRef"
-                                                        className="size-gray">
-                                                        {item.value}
-                                                    </p> :
-                                                    <p
-                                                        id="size"
-                                                        ref="sizeRef"
-                                                        className="size">
-                                                        {item.value}
-                                                    </p>
+                                            value[1].item.attributes.map((item, index) => (
+                                                <div key={index} className="divider">
+                                                    {item.items.map((r, key) => (
+                                                        <div key={key}>
+                                                            {item.type === "text" ?
+                                                                r.value !== value[1].size[index] ?
+
+                                                                    <p
+                                                                        id="size"
+                                                                        className="size-gray">
+                                                                        {r.value}
+                                                                    </p> :
+                                                                    <p
+                                                                        id="size"
+                                                                        className="size">
+                                                                        {r.value}
+                                                                    </p>
+                                                                :
+                                                                r.value !== value[1].size[index] ?
+
+                                                                    <p
+                                                                        id="size"
+                                                                        style={{color: r.value, backgroundColor: r.value}}
+                                                                        className="size-color gray">
+                                                                        A
+                                                                    </p> :
+                                                                    <p
+                                                                        id="size"
+                                                                        style={{color: r.value, backgroundColor: r.value}}
+                                                                        className="size-color">
+                                                                        A
+                                                                    </p>
+                                                            }
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             ))}
                                     </div>
                                 </div>
                                 <div className="minicart-each-item-count">
                                     <button
-                                        id={value[1].item.id + "_Cart_" + value[1].size}
+                                        id={
+                                            value[1].item.id + "_Cart_" +
+                                            value[1].size.join('')
+                                        }
                                         onClick={this.addItem}
                                     >+</button>
                                     <p>{value[0]}</p>
                                     <button
-                                        id={value[1].item.id + "_Cart_" + value[1].size}
+                                        id={
+                                            value[1].item.id + "_Cart_" +
+                                            value[1].size.join('')}
                                         onClick={this.removeItem}
                                     >-</button>
                                 </div>

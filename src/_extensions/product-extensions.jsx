@@ -1,12 +1,10 @@
 import { Component } from 'react';
 
 class ProductExtention extends Component {
-    cartDataCreator = (id,listData,th,sizeValue) => {
+    cartDataCreator = (id, listData, th, sizeValue) => {
         let dictData = {};
         dictData.item = th.state.data;
-        th.state.data.attributes.length !== 0 ?
-            dictData.size = sizeValue :
-            dictData.size = "NO SIZE";
+        dictData.size = sizeValue;
         listData.push(dictData);
         if (listData.length > 2) listData.pop();
 
@@ -16,8 +14,6 @@ class ProductExtention extends Component {
         let item = JSON.parse(sessionStorage.getItem(id));
         item[0] += 1;
         sessionStorage.setItem(id, JSON.stringify(item));
-
-        // this.props.dataToCart(id);
 
         this.addCart(JSON.parse(sessionStorage.getItem(id)), id);
     }

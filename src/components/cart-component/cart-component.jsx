@@ -191,10 +191,12 @@ class CartComponent extends Component {
                                         >-</button>
                                     </div>
                                     <div className="cart-item-img-container">
-                                        <div className="cart-item-gallery-scroll">
-                                            <button value={key} onClick={this.scroll} className="scroll">{"❮"}</button>
-                                            <button value={key} onClick={this.scroll} className="scroll">{"❯"}</button>
-                                        </div>
+                                        {value[1].item.gallery.length > 1 &&
+                                            <div className="cart-item-gallery-scroll">
+                                                <button value={key} onClick={this.scroll} className="scroll">{"❮"}</button>
+                                                <button value={key} onClick={this.scroll} className="scroll">{"❯"}</button>
+                                            </div>
+                                        }
                                         <img
                                             ref={key + "img"}
                                             src={value[1].item.gallery[this.state.galleryIndex]

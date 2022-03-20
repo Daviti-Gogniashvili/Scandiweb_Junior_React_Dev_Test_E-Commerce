@@ -39,6 +39,7 @@ const getByIdQuery = gql`
             description
             brand
             attributes {
+                name
                 type
                 items {
                     id

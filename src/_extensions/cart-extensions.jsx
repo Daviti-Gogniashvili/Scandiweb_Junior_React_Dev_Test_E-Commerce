@@ -7,6 +7,8 @@ class CartExtensions extends Component {
         let list = []
         let item = JSON.parse(sessionStorage.getItem(id));
 
+        console.log(id);
+
         //removing item when only one remains and "-" button is clicked and updating variables too;
         if (item[0] === 1 && operator!=="plus") {
             sessionStorage.removeItem(id);
