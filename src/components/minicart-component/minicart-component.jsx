@@ -14,6 +14,8 @@ class MinicartComponent extends Component {
 
     constructor() {
         super();
+        this.wrapperRef = React.createRef();
+        this.handleClickOutside = this.handleClickOutside.bind(this);
         this.state = {
             cartData: JSON.parse(sessionStorage.getItem("cartData")) || {},
             totalPrice: 0,
@@ -22,15 +24,21 @@ class MinicartComponent extends Component {
     }
 
     componentDidMount() {
+        window.addEventListener("mousedown", this.handleClickOutside);
         this.computeTotal();
-        this.outOfMinicart();
         this.mounted = true;
     }
 
-    outOfMinicart() {
-        window.addEventListener("click", (event) => {
-            if (event.target.id === "show") this.props.minicartState(false);
-        })
+    componentWillUnmount() {
+        window.removeEventListener("mousedown", this.handleClickOutside);
+    }
+
+    handleClickOutside(event) {
+        if (this.wrapperRef &&
+            !this.wrapperRef.current.contains(event.target) &&
+            !this.props.compRef.current.contains(event.target)) {
+            this.props.minicartState(false);
+        }
     }
 
     cartCheck() {
@@ -62,18 +70,18 @@ class MinicartComponent extends Component {
         })
     }
 
-    addItem = (e) => {
+    addItem = (id) => {
         this.refreshCart();
         this.changeBadgeState("plus");
-        this.setState({ totalPrice: extention.addOrSubtract(e, this.state.totalPrice, this.props.curIndex, "plus") });
+        this.setState({ totalPrice: extention.addOrSubtract(id, this.state.totalPrice, this.props.curIndex, "plus") });
 
         this.cartCheck();
     }
 
-    removeItem = (e) => {
+    removeItem = (id) => {
         this.refreshCart();
         this.changeBadgeState("minus");
-        this.setState({ totalPrice: extention.addOrSubtract(e, this.state.totalPrice, this.props.curIndex, "minus") });
+        this.setState({ totalPrice: extention.addOrSubtract(id, this.state.totalPrice, this.props.curIndex, "minus") });
 
         this.cartCheck();
     }
@@ -92,7 +100,7 @@ class MinicartComponent extends Component {
     render() {
         return (
             <section id="show" className="minicart-container">
-                <div className="minicart">
+                <div id="minicart" className="minicart" ref={this.wrapperRef}>
                     <p className="minicart-items-title">My Bag<span>, {this.displayTotalAmount()} items</span></p>
                     <div className="minicart-items-list">
                         {Object.entries(this.state.cartData).map(([key, value]) => (
@@ -132,13 +140,13 @@ class MinicartComponent extends Component {
 
                                                                     <p
                                                                         id="size"
-                                                                        style={{color: r.value, backgroundColor: r.value}}
+                                                                        style={{ color: r.value, backgroundColor: r.value }}
                                                                         className="size-color gray">
                                                                         A
                                                                     </p> :
                                                                     <p
                                                                         id="size"
-                                                                        style={{color: r.value, backgroundColor: r.value}}
+                                                                        style={{ color: r.value, backgroundColor: r.value }}
                                                                         className="size-color">
                                                                         A
                                                                     </p>
@@ -151,18 +159,21 @@ class MinicartComponent extends Component {
                                 </div>
                                 <div className="minicart-each-item-count">
                                     <button
-                                        id={
-                                            value[1].item.id + "_Cart_" +
-                                            value[1].size.join('')
+                                        onClick={
+                                            () => this.addItem(
+                                                value[1].item.id + "_Cart_" +
+                                                value[1].size.join('')
+                                            )
                                         }
-                                        onClick={this.addItem}
                                     >+</button>
                                     <p>{value[0]}</p>
                                     <button
-                                        id={
-                                            value[1].item.id + "_Cart_" +
-                                            value[1].size.join('')}
-                                        onClick={this.removeItem}
+                                        onClick={
+                                            () => this.removeItem(
+                                                value[1].item.id + "_Cart_" +
+                                                value[1].size.join('')
+                                            )
+                                        }
                                     >-</button>
                                 </div>
                                 <img src={value[1].item.gallery[0]} alt="" className="minicart-item-img" />

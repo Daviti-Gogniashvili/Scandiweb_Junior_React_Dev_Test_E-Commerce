@@ -37,15 +37,15 @@ class CartComponent extends Component {
         this.mounted && this.setState({ totalPrice: Math.round(total * 100) / 100 });
     }
 
-    scroll = (e) => {
-        let key = e.target.value;
+    scroll = (Key,operator) => {
+        let key = Key;
         if (this.prev !== key) {
             this.prev = key;
             this.index = 0;
         }
         let data = this.state.cartData[key][1].item;
         let length = data.gallery.length;
-        if (e.target.innerHTML === "❯") {
+        if (operator === "❯") {
             if (this.index < length - 1) {
                 this.index++;
                 this.setState({[data.id]: this.index});
@@ -92,12 +92,12 @@ class CartComponent extends Component {
         })
     }
 
-    addItem = (e) => {
+    addItem = (id) => {
         this.changeBadgeState("plus");
         this.setState({
             totalPrice:
                 extension.addOrSubtract(
-                    e,
+                    id,
                     this.state.totalPrice,
                     this.state.curIndex,
                     "plus")
@@ -106,12 +106,12 @@ class CartComponent extends Component {
         this.cartCheck();
     }
 
-    removeItem = (e) => {
+    removeItem = (id) => {
         this.changeBadgeState("minus");
         this.setState({
             totalPrice:
                 extension.addOrSubtract(
-                    e,
+                    id,
                     this.state.totalPrice,
                     this.state.curIndex,
                     "minus")
@@ -186,19 +186,19 @@ class CartComponent extends Component {
                                     <div className="cart-each-item-count">
                                         <button
                                             id={value[1].item.id + "_Cart_" + value[1].size.join('')}
-                                            onClick={this.addItem}
+                                            onClick={() => this.addItem(value[1].item.id + "_Cart_" + value[1].size.join(''))}
                                         >+</button>
                                         <p>{value[0]}</p>
                                         <button
                                             id={value[1].item.id + "_Cart_" + value[1].size.join('')}
-                                            onClick={this.removeItem}
+                                            onClick={() => this.removeItem(value[1].item.id + "_Cart_" + value[1].size.join(''))}
                                         >-</button>
                                     </div>
                                     <div className="cart-item-img-container">
                                         {value[1].item.gallery.length > 1 &&
                                             <div className="cart-item-gallery-scroll">
-                                                <button value={key} onClick={this.scroll} className="scroll">{"❮"}</button>
-                                                <button value={key} onClick={this.scroll} className="scroll">{"❯"}</button>
+                                                <button onClick={() => this.scroll(key,"❮")} className="scroll">{"❮"}</button>
+                                                <button onClick={() => this.scroll(key,"❯")} className="scroll">{"❯"}</button>
                                             </div>
                                         }
                                         <img

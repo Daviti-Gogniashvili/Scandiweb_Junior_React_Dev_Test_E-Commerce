@@ -1,9 +1,9 @@
 import { Component } from 'react';
 
 class CartExtensions extends Component {
-    addOrSubtract(event,Price,Index,operator) {
+    addOrSubtract(Id,Price,Index,operator) {
         let dictOf = {}
-        let id = event.target.id;
+        let id = Id;
         let list = []
         let item = JSON.parse(sessionStorage.getItem(id));
 

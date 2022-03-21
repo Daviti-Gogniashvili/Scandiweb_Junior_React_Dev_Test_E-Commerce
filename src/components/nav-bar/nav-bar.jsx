@@ -17,6 +17,9 @@ class NavBar extends Component {
     mounted = false;
     constructor() {
         super();
+        this.compRef = React.createRef();
+        this.Ref = React.createRef();
+        this.beacon = 0;
         this.state = {
             dropdownCurrency: "",
             dropdownMinicart: "",
@@ -25,16 +28,15 @@ class NavBar extends Component {
             minicartState: false,
             badgeAmount: 0,
             categories: [],
-            currencies: []
+            currencies: [],
         }
     }
 
     outOfDropdownCurrency() {
-        window.addEventListener("click", (event) => {
-            if (event.target.id !== "actions-item") {
+        window.addEventListener('click', (ev) => {
+            if (!this.Ref.current.contains(ev.target))
                 this.mounted && this.setState({ dropdownCurrency: "" });
-            }
-        })
+        });
     }
 
     dropdownCurrency = () => {
@@ -47,16 +49,18 @@ class NavBar extends Component {
         this.setState({ minicartState: !this.state.minicartState });
     }
 
-    currency = (e) => {
-        let symbol = this.state.currencies[e.target.id].symbol;
+    currency = (index) => {
+        this.beacon = 1;
+        // this.setState({ dropdownCurrency: "" });
+        let symbol = this.state.currencies[index].symbol;
         store.dispatch({
             type: "currency",
             payload: {
-                curIndex: e.target.id,
+                curIndex: index,
                 symbol: symbol
             }
         });
-        this.setState({ currencyIndex: e.target.id, currencyLabel: symbol });
+        this.setState({ currencyIndex: index, currencyLabel: symbol });
 
     }
 
@@ -108,7 +112,7 @@ class NavBar extends Component {
                 {this.mounted &&
                     <>
                         <div className="category-container">
-                            {this.state.categories.map((item,index) => (
+                            {this.state.categories.map((item, index) => (
                                 <NavLink key={index} to={"/" + item.name} id="show" className="category-item">{item.name.toUpperCase()}</NavLink>
                             ))}
                             <NavLink to="/out-of-stock" id="show" className="category-item">OUT OF STOCK</NavLink>
@@ -120,6 +124,7 @@ class NavBar extends Component {
                             <div className="dropdown-currency">
                                 <p>{this.state.currencyLabel}</p>
                                 <input
+                                    ref={this.Ref}
                                     className="actions-item"
                                     onClick={this.dropdownCurrency}
                                     id="actions-item" type="image"
@@ -128,10 +133,9 @@ class NavBar extends Component {
                                 />
                                 <div id="myDropdown" className={"dropdown-content " + this.state.dropdownCurrency}>
                                     {this.state.currencies.map((item, index) => (
-                                        <button 
+                                        <button
                                             key={index}
-                                            onClick={this.currency}
-                                            id={index}
+                                            onClick={() => this.currency(index)}
                                             className="dropdown-item"
                                             name={item.value}>
                                             {item.symbol} {item.label}
@@ -139,7 +143,7 @@ class NavBar extends Component {
                                     ))}
                                 </div>
                             </div>
-                            <div onClick={this.setMinicartState} className="cart-display-container">
+                            <div ref={this.compRef} onClick={this.setMinicartState} className="cart-display-container">
                                 <input
                                     className="actions-item"
                                     id="minicart"
@@ -156,6 +160,7 @@ class NavBar extends Component {
                             {
                                 this.state.minicartState ?
                                     <MinicartComponent
+                                        compRef={this.compRef}
                                         curIndex={this.state.currencyIndex}
                                         curSymbol={this.state.currencyLabel}
                                         minicartState={

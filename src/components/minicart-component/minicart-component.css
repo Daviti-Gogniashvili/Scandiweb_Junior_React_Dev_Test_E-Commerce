@@ -21,6 +21,7 @@
 }
 
 .minicart {
+  padding-top: 80px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -85,6 +86,10 @@
   width: auto;
   display: flex;
   flex-direction: column;
+}
+
+.size-container > * {
+  margin-top: 5px;
 }
 
 .divider {
