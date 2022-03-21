@@ -10,6 +10,7 @@ import './details-page.css';
 import ProductExtention from '../../_extensions/product-extensions';
 
 let listData = [0];
+let id;
 let extension = new ProductExtention();
 
 class DetailsPage extends Component {
@@ -70,16 +71,6 @@ class DetailsPage extends Component {
         }
     }
 
-    persistId = () => {
-        store.subscribe(() => {
-            sessionStorage.setItem("id", JSON.stringify(store.getState().singleDataReducer.id));
-        })
-    }
-
-    getId = () => {
-        return JSON.parse(sessionStorage.getItem("id"));
-    }
-
     toggleShowClass = (e) => {
         e.classList.toggle("show");
     }
@@ -112,8 +103,7 @@ class DetailsPage extends Component {
 
     async componentDidMount() {
         this.getCurrencyIndex();
-        this.persistId();
-        await fetchByIdData(this.getId()).then((res) => {
+        await fetchByIdData(id).then((res) => {
             this.fetched = true;
             this.setState({
                 data: res.data.product,
@@ -160,8 +150,13 @@ class DetailsPage extends Component {
         this.fetched = false;
     }
 
+    setId = () => {
+        id = window.location.pathname.substring(1, window.location.pathname.length);
+    }
+
     render() {
         this.setStatus_attributes();
+        this.setId();
         return (
             <section className="details-page-container">
                 {this.fetched ?
@@ -180,6 +175,10 @@ class DetailsPage extends Component {
                             ))}
                         </div>
                         <div className="gallery-item-container">
+                            {
+                            this.state.data.inStock === false && 
+                            <div className="gallery-cover"><span>OUT OF STOCK</span></div>
+                            }
                             <img src={this.state.gallerySrc} alt="" id="gallery-img-large" className="gallery-img-large" />
                         </div>
                         <div className="item-details">

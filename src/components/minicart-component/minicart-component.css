@@ -42,8 +42,8 @@
 }
 
 .minicart-list-item {
-  height: 230px;
-  max-height: 250px;
+  box-sizing: border-box;
+  height: fit-content;
   padding: 5px;
   display: flex;
   border: solid 1px lightgray;
@@ -53,12 +53,10 @@
 }
 
 .minicart-item-details {
-  box-sizing: border-box;
   height: 100%;
   width: 45%;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
 .minicart-item-details > * {
@@ -67,6 +65,7 @@
 
 .minicart-item-details > div {
   padding-bottom: 0px;
+  padding-top: 20px;
 }
 
 .minicart-item-details > p {
@@ -79,13 +78,10 @@
 
 .mini-price {
   margin: 0;
-  padding-bottom: 20px;
   font-weight: bolder;
 }
 
 .size-container {
-  bottom: 0;
-  position: absolute;
   width: auto;
   display: flex;
   flex-direction: column;
@@ -97,12 +93,13 @@
 }
 
 .divider > * {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 
 .size-gray {
-  margin-right: 10px;
+  margin: 0 10px 0 0;
   border: solid 1px gray;
   background: rgb(238, 238, 238);
   text-align: center;
@@ -112,7 +109,7 @@
 
 .size {
   font-weight: 600;
-  margin-right: 10px;
+  margin: 0 10px 0 0;
   border: solid 1px;
   text-align: center;
   padding: 1px 7px;
@@ -120,7 +117,7 @@
 
 .size-color {
   font-weight: 600;
-  margin-right: 5px;
+  margin: 0 5px 0 0;
   border: solid 1px black;
   text-align: center;
   padding: 1px 7px;
@@ -139,7 +136,7 @@
 
 .minicart-each-item-count {
   width: 9%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

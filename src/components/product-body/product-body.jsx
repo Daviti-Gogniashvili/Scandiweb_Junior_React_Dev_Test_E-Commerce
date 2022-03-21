@@ -6,12 +6,17 @@ import ProductListingComponent from '../product-listing-component/product-listin
 import './product-body.css';
 
 class ProductBody extends Component {
-    render() {
+
+    setID = () => {
         let id = window.location.pathname.substring(1, window.location.pathname.length);
+        return id;
+    }
+
+    render() {
         return (
             <div>
                 <NavBar />
-                {id !== "cart" ?
+                {this.setID() !== "cart" ?
                     this.props.path === undefined ? <DetailsPage /> :
                         <ProductListingComponent /> :
                     <CartComponent />

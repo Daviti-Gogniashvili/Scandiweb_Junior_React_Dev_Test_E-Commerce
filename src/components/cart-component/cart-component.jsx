@@ -37,14 +37,6 @@ class CartComponent extends Component {
         this.mounted && this.setState({ totalPrice: Math.round(total * 100) / 100 });
     }
 
-    checkForSwatch() {
-        if (!/^[\w]+$/.test(this.refs.sizeRef === undefined ? "A" : this.refs.sizeRef.value)) {
-            this.refs.sizeRef.style.backgroundColor = this.refs.sizeRef.value;
-            this.refs.sizeRef.style.color = this.refs.sizeRef.value;
-            this.refs.sizeRef.innerHTML = "A";
-        }
-    }
-
     scroll = (e) => {
         let key = e.target.value;
         if (this.prev !== key) {
@@ -52,18 +44,17 @@ class CartComponent extends Component {
             this.index = 0;
         }
         let data = this.state.cartData[key][1].item;
-        let attribute = this.refs[key + "img"];
         let length = data.gallery.length;
         if (e.target.innerHTML === "❯") {
             if (this.index < length - 1) {
                 this.index++;
-                attribute.src = data.gallery[this.index];
+                this.setState({[data.id]: this.index});
             }
         }
         else {
             if (this.index > 0) {
                 this.index--;
-                attribute.src = data.gallery[this.index];
+                this.setState({[data.id]: this.index});
             }
         }
 
@@ -83,17 +74,12 @@ class CartComponent extends Component {
 
     componentDidUpdate() {
         this.refreshCart();
-        // let refresh = this.props.refreshData;
-        // if (refresh === "refresh") {
-        //     window.location.reload();
-        // }
     }
 
     componentDidMount() {
         this.mounted = true;
         this.getCurrencyIndex();
         this.computeTotal();
-        this.checkForSwatch();
     }
 
     componentWillUnmount() {
@@ -141,10 +127,7 @@ class CartComponent extends Component {
                     <h2 className="cart-items-title">CART</h2>
                     <div className="cart-items-list">
                         {Object.keys(this.state.cartData).length === 0 ?
-                            <div style={{
-                                fontSize: '8em',
-                                color: 'grey'
-                            }}>Empty Cart</div> :
+                            <div className="empty-cart">Empty Cart</div> :
                             Object.entries(this.state.cartData).map(([key, value]) => (
                                 <div className="cart-list-item" key={key}>
                                     <div className="cart-item-details">
@@ -158,35 +141,56 @@ class CartComponent extends Component {
                                             {value[1].item.attributes.length === 0 ?
                                                 <p
                                                     id="size"
-                                                    ref="sizeRef"
                                                     className="cart-size">
                                                     {value[1].size}
                                                 </p> :
-                                                value[1].item.attributes[0].items.map((item) => (
-                                                    item.value !== value[1].size ?
-                                                        <p
-                                                            id="size"
-                                                            ref="sizeRef"
-                                                            className="cart-size-gray">
-                                                            {item.value}
-                                                        </p> :
-                                                        <p
-                                                            id="size"
-                                                            ref="sizeRef"
-                                                            className="cart-size">
-                                                            {item.value}
-                                                        </p>
+                                                value[1].item.attributes.map((item, index) => (
+                                                    <div key={index} className="cart-divider">
+                                                        {item.items.map((r, key) => (
+                                                            <div key={key}>
+                                                                {item.type === "text" ?
+                                                                    r.value !== value[1].size[index] ?
+
+                                                                        <p
+                                                                            id="size"
+                                                                            className="cart-size-gray">
+                                                                            {r.value}
+                                                                        </p> :
+                                                                        <p
+                                                                            id="size"
+                                                                            className="cart-size">
+                                                                            {r.value}
+                                                                        </p>
+                                                                    :
+                                                                    r.value !== value[1].size[index] ?
+
+                                                                        <p
+                                                                            id="size"
+                                                                            style={{ color: r.value, backgroundColor: r.value }}
+                                                                            className="cart-size-color cart-gray">
+                                                                            A
+                                                                        </p> :
+                                                                        <p
+                                                                            id="size"
+                                                                            style={{ color: r.value, backgroundColor: r.value }}
+                                                                            className="cart-size-color">
+                                                                            A
+                                                                        </p>
+                                                                }
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 ))}
                                         </div>
                                     </div>
                                     <div className="cart-each-item-count">
                                         <button
-                                            id={value[1].item.id + "_Cart_" + value[1].size}
+                                            id={value[1].item.id + "_Cart_" + value[1].size.join('')}
                                             onClick={this.addItem}
                                         >+</button>
                                         <p>{value[0]}</p>
                                         <button
-                                            id={value[1].item.id + "_Cart_" + value[1].size}
+                                            id={value[1].item.id + "_Cart_" + value[1].size.join('')}
                                             onClick={this.removeItem}
                                         >-</button>
                                     </div>
@@ -198,8 +202,7 @@ class CartComponent extends Component {
                                             </div>
                                         }
                                         <img
-                                            ref={key + "img"}
-                                            src={value[1].item.gallery[this.state.galleryIndex]
+                                            src={value[1].item.gallery[this.state[value[1].item.id] || 0]
                                             }
                                             alt=""
                                             className="cart-item-img" />
