@@ -26,6 +26,7 @@ class DetailsPage extends Component {
             html: "",
             gallerySrc: "",
             curIndex: 0,
+            show: ""
         }
     }
 
@@ -71,31 +72,20 @@ class DetailsPage extends Component {
         }
     }
 
-    toggleShowClass = (e) => {
-        e.classList.toggle("show");
+    setAttributeValue(id, value) {
+        this.setState({ [id]: value });
+        if (this.state[id] === value) this.setState({ [id]: "NO VALUE" })
     }
 
-    setAttributeValue(e) {
-        this.setState({ [e.id]: e.value });
-        if (this.state[e.id] === e.value) this.setState({ [e.id]: "NO VALUE" })
+    attributeAction = (id, value) => {
+        this.setAttributeValue(id, value);
     }
-
-    attributeAction = (e) => {
-        this.toggleShowClass(e.target);
-        this.setAttributeValue(e.target);
-    }
-
-    inputRefs = [];
-
-    setRef = (ref) => {
-        this.inputRefs.push(ref);
-    };
 
     getAttributes(item) {
-        this.fetched && 
+        this.fetched &&
             item.map((r) => (
                 this.setState({
-                    [r.name]: "NO VALUE"
+                    [r.name]: "NO VALUE",
                 })
             ))
     }
@@ -114,17 +104,6 @@ class DetailsPage extends Component {
         this.getAttributes(this.state.data.attributes);
     }
 
-    removeShowFromUnsetSizeButton() {
-        for (let i = 0; i < this.inputRefs.length; i++) {
-            if (this.inputRefs[i] !== undefined) {
-                if (this.inputRefs[i].value !== this.state[this.inputRefs[i].id]) {
-                    this.inputRefs[i].classList.remove("show");
-
-                }
-            }
-        }
-    }
-
     htmlFrom = (htmlString) => {
         const cleanHtmlString = DOMPurify.sanitize(htmlString,
             { USE_PROFILES: { html: true } });
@@ -132,12 +111,8 @@ class DetailsPage extends Component {
         return html;
     }
 
-    getGallerySrc = (e) => {
-        this.setState({ gallerySrc: e.target.value });
-    }
-
-    componentDidUpdate() {
-        this.removeShowFromUnsetSizeButton();
+    getGallerySrc = (src) => {
+        this.setState({ gallerySrc: src });
     }
 
     getCurrencyIndex() {
@@ -166,9 +141,9 @@ class DetailsPage extends Component {
                                 <div key={item} className="list-item-container">
                                     <input
                                         type="image"
-                                        onClick={this.getGallerySrc}
-                                        src={item} alt=""
-                                        value={item}
+                                        onClick={() => this.getGallerySrc(item)}
+                                        src={item}
+                                        alt=""
                                         className="gallery-img"
                                     />
                                 </div>
@@ -176,8 +151,8 @@ class DetailsPage extends Component {
                         </div>
                         <div className="gallery-item-container">
                             {
-                            this.state.data.inStock === false && 
-                            <div className="gallery-cover"><span>OUT OF STOCK</span></div>
+                                this.state.data.inStock === false &&
+                                <div className="gallery-cover"><span>OUT OF STOCK</span></div>
                             }
                             <img src={this.state.gallerySrc} alt="" id="gallery-img-large" className="gallery-img-large" />
                         </div>
@@ -197,12 +172,14 @@ class DetailsPage extends Component {
                                                         <>
                                                             {item.items.map((r) => (
                                                                 <button
-                                                                    ref={this.setRef}
-                                                                    id={item.name}
                                                                     key={r.id}
-                                                                    onClick={this.attributeAction}
-                                                                    className="size-input"
-                                                                    value={r.value}>
+                                                                    onClick={(e) => this.attributeAction(item.name, r.value)}
+                                                                    className={
+                                                                        `size-input
+                                                                        ${this.state[item.name] === r.value ?
+                                                                            " show" :
+                                                                            ""}`
+                                                                    }>
                                                                     {r.value}
                                                                 </button>
                                                             ))}
@@ -210,16 +187,18 @@ class DetailsPage extends Component {
                                                         <>
                                                             {item.items.map((r) => (
                                                                 <button
-                                                                    ref={this.setRef}
-                                                                    id={item.name}
-                                                                    onClick={this.attributeAction}
+                                                                    onClick={(e) => this.attributeAction(item.name, r.value)}
                                                                     key={r.id}
                                                                     style={{
                                                                         backgroundColor: r.value,
                                                                         color: r.value
                                                                     }}
-                                                                    className="size-input-swatch"
-                                                                    value={r.value}
+                                                                    className={
+                                                                        `size-input-swatch
+                                                                        ${this.state[item.name] === r.value ?
+                                                                            " show" :
+                                                                            ""}`
+                                                                    }
                                                                 />
                                                             ))}
                                                         </>}
